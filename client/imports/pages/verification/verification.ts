@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { AlertController, NavController, NavParams } from 'ionic-angular';
 import { ProfilePage } from '../profile/profile';
 import { PhoneService } from '../../services/phone';
-import template from './verification.html';
 
 @Component({
-  template
+  templateUrl: './verification.html',
+  styleUrls: ['./verification.scss']
 })
 export class VerificationPage implements OnInit {
   code: string = '';
@@ -28,11 +28,10 @@ export class VerificationPage implements OnInit {
     }
   }
 
-  verify(): void {
-    this.phoneService.login(this.phone, this.code).then(() => {
-      this.navCtrl.setRoot(ProfilePage, {}, {
-        animate: true
-      });
+  async verify(): Promise<void> {
+    await this.phoneService.login(this.phone, this.code)
+    this.navCtrl.setRoot(ProfilePage, {}, {
+      animate: true
     });
   }
 

@@ -3,10 +3,10 @@ import { Alert, AlertController, NavController, ViewController } from 'ionic-ang
 import { PhoneService } from '../../services/phone';
 import { LoginPage } from '../login/login';
 import { ProfilePage } from '../profile/profile';
-import template from './chats-options.html';
 
 @Component({
-  template
+  templateUrl: './chats-options.html',
+  styleUrls: ['./chats-options.scss']
 })
 @Injectable()
 export class ChatsOptionsComponent {
@@ -17,13 +17,12 @@ export class ChatsOptionsComponent {
     private viewCtrl: ViewController
   ) {}
 
-  editProfile(): void {
-    this.viewCtrl.dismiss().then(() => {
-      this.navCtrl.push(ProfilePage);
-    });
+  async editProfile(): Promise<void> {
+    await this.viewCtrl.dismiss();
+    this.navCtrl.push(ProfilePage);
   }
 
-  logout(): void {
+  async logout(): Promise<void> {
     const alert = this.alertCtrl.create({
       title: 'Logout',
       message: 'Are you sure you would like to proceed?',
@@ -42,23 +41,22 @@ export class ChatsOptionsComponent {
       ]
     });
 
-    this.viewCtrl.dismiss().then(() => {
-      alert.present();
-    });
+    await this.viewCtrl.dismiss();
+    alert.present();
   }
 
-  handleLogout(alert: Alert): void {
-    alert.dismiss().then(() => {
-      return this.phoneService.logout();
-    })
-    .then(() => {
+  async handleLogout(alert: Alert): Promise<void> {
+
+    try{
+      await alert.dismiss();
+      await this.phoneService.logout();
       this.navCtrl.setRoot(LoginPage, {}, {
         animate: true
-      });
-    })
-    .catch((e) => {
+      })
+    }catch(e){
       this.handleError(e);
-    });
+    }
+
   }
 
   handleError(e: Error): void {

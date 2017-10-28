@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { NavParams, ViewController } from 'ionic-angular';
-import template from './show-picture.html';
 
 @Component({
-  template
+  templateUrl: './show-picture.html',
+  styleUrls: ['./show-picture.scss']
 })
 export class ShowPictureComponent {
   pictureSrc: string;

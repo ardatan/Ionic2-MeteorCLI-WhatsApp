@@ -2,10 +2,10 @@ import { Component, AfterContentInit } from '@angular/core';
 import { Alert, AlertController, NavController } from 'ionic-angular';
 import { PhoneService } from '../../services/phone';
 import { VerificationPage } from '../verification/verification';
-import template from './login.html';
 
 @Component({
-  template
+  templateUrl: './login.html',
+  styleUrls: ['./login.scss']
 })
 export class LoginPage implements AfterContentInit {
   phone = '';
@@ -16,12 +16,11 @@ export class LoginPage implements AfterContentInit {
     private navCtrl: NavController
   ) {}
 
-  ngAfterContentInit() {
-    this.phoneService.getNumber().then((phone) => {
-      if (phone) {
-        this.login(phone);
-      }
-    });
+  async ngAfterContentInit() {
+    const phone = await this.phoneService.getNumber();
+    if (phone) {
+      this.login(phone);
+    }
   }
 
   onInputKeypress({keyCode}: KeyboardEvent): void {
@@ -52,18 +51,16 @@ export class LoginPage implements AfterContentInit {
     alert.present();
   }
 
-  handleLogin(alert: Alert): void {
-    alert.dismiss().then(() => {
-      return this.phoneService.verify(this.phone);
-    })
-    .then(() => {
+  async handleLogin(alert: Alert): Promise<void> {
+    try{
+      await alert.dismiss();
+      await this.phoneService.verify(this.phone);
       this.navCtrl.push(VerificationPage, {
         phone: this.phone
       });
-    })
-    .catch((e) => {
+    }catch(e){
       this.handleError(e);
-    });
+    }
   }
 
   handleError(e: Error): void {

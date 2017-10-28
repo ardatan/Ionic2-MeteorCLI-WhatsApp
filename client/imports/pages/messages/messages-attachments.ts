@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { AlertController, Platform, ModalController, ViewController } from 'ionic-angular';
-import { Camera } from 'ionic-native';
+import { Camera } from '@ionic-native/camera';
 import { PictureService } from '../../services/picture';
 import { MessageType } from '../../../../imports/models';
 import { NewLocationMessageComponent } from './location-message';
-import template from './messages-attachments.html';
 
 @Component({
-  template
+  templateUrl: './messages-attachments.html',
+  styleUrls: ['./messages-attachments.scss']
 })
 export class MessagesAttachmentsComponent {
   constructor(
@@ -15,30 +15,29 @@ export class MessagesAttachmentsComponent {
     private platform: Platform,
     private viewCtrl: ViewController,
     private modelCtrl: ModalController,
-    private pictureService: PictureService
+    private pictureService: PictureService,
+    private camera: Camera
   ) {}
 
-  sendPicture(): void {
-    this.pictureService.select().then((file: File) => {
-      this.viewCtrl.dismiss({
-        messageType: MessageType.PICTURE,
-        selectedPicture: file
-      });
+  async sendPicture(): Promise<void> {
+    const file = await this.pictureService.select();
+    this.viewCtrl.dismiss({
+      messageType: MessageType.PICTURE,
+      selectedPicture: file
     });
   }
 
-  takePicture(): void {
+  async takePicture(): Promise<void> {
     if (!this.platform.is('cordova')) {
       return console.warn('Device must run cordova in order to take pictures');
     }
 
-    Camera.getPicture().then((dataURI) => {
-      const blob = this.pictureService.convertDataURIToBlob(dataURI);
+    const dataURI = await this.camera.getPicture()
+    const blob = this.pictureService.convertDataURIToBlob(dataURI);
 
-      this.viewCtrl.dismiss({
-        messageType: MessageType.PICTURE,
-        selectedPicture: blob
-      });
+    this.viewCtrl.dismiss({
+      messageType: MessageType.PICTURE,
+      selectedPicture: blob
     });
   }
 

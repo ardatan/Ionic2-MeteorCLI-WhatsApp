@@ -5,10 +5,10 @@ import { Pictures } from '../../../../imports/collections';
 import { Profile } from '../../../../imports/models';
 import { PictureService } from '../../services/picture';
 import { ChatsPage } from '../chats/chats';
-import template from './profile.html';
 
 @Component({
-  template
+  templateUrl: './profile.html',
+  styleUrls: ['./profile.scss']
 })
 export class ProfilePage implements OnInit {
   picture: string;
@@ -30,23 +30,23 @@ export class ProfilePage implements OnInit {
     });
   }
 
-  selectProfilePicture(): void {
-    this.pictureService.select().then((blob) => {
+  async selectProfilePicture(): Promise<void> {
+    try{
+      const blob = await this.pictureService.select();
       this.uploadProfilePicture(blob);
-    })
-      .catch((e) => {
-        this.handleError(e);
-      });
+    }catch(e){
+      this.handleError(e);
+    }
   }
 
-  uploadProfilePicture(blob: Blob): void {
-    this.pictureService.upload(blob).then((picture) => {
+  async uploadProfilePicture(blob: Blob): Promise<void> {
+    try{
+      const picture = await this.pictureService.upload(blob);
       this.profile.pictureId = picture._id;
       this.picture = picture.url;
-    })
-      .catch((e) => {
-        this.handleError(e);
-      });
+    }catch(e){
+      this.handleError(e);
+    }
   }
 
   updateProfile(): void {

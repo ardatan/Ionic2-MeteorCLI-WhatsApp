@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, ElementRef } from '@angular/core';
 import { NavParams, PopoverController, ModalController } from 'ionic-angular';
 import { MeteorObservable } from 'meteor-rxjs';
 import { _ } from 'meteor/underscore';
-import * as Moment from 'moment';
+import * as moment from 'moment';
 import { Observable, Subscription, Subscriber } from 'rxjs';
 import { Messages } from '../../../../imports/collections';
 import { Chat, Message, MessageType, Location } from '../../../../imports/models';
@@ -10,10 +10,10 @@ import { PictureService } from '../../services/picture';
 import { MessagesAttachmentsComponent } from './messages-attachments';
 import { MessagesOptionsComponent } from './messages-options';
 import { ShowPictureComponent } from './show-picture';
-import template from './messages.html';
 
 @Component({
-  template
+  templateUrl: './messages.html',
+  styleUrls: ['./messages.scss']
 })
 export class MessagesPage implements OnInit, OnDestroy {
   selectedChat: Chat;
@@ -158,7 +158,7 @@ export class MessagesPage implements OnInit, OnDestroy {
 
         // Group by creation day
         const groupedMessages = _.groupBy(messages, (message) => {
-          return Moment(message.createdAt).format(format);
+          return moment(message.createdAt).format(format);
         });
 
         // Transform dictionary into an array since Angular's view engine doesn't know how
@@ -167,7 +167,7 @@ export class MessagesPage implements OnInit, OnDestroy {
           return {
             timestamp: timestamp,
             messages: groupedMessages[timestamp],
-            today: Moment().format(format) === timestamp
+            today: moment().format(format) === timestamp
           };
         });
       });
@@ -250,13 +250,12 @@ export class MessagesPage implements OnInit, OnDestroy {
     popover.present();
   }
 
-  sendPictureMessage(blob: Blob): void {
-    this.pictureService.upload(blob).then((picture) => {
-      MeteorObservable.call('addMessage', MessageType.PICTURE,
-        this.selectedChat._id,
-        picture.url
-      ).zone().subscribe();
-    });
+  async sendPictureMessage(blob: Blob): Promise<void> {
+    const picture = await this.pictureService.upload(blob)
+    MeteorObservable.call('addMessage', MessageType.PICTURE,
+      this.selectedChat._id,
+      picture.url
+    ).zone().subscribe();
   }
 
   getLocation(locationString: string): Location {

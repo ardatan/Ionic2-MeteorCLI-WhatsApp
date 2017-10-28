@@ -1,9 +1,10 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
+import { publishComposite } from 'meteor/reywood:publish-composite';
 import { Chats, Messages, Pictures, Users } from '../imports/collections';
 import { Chat, Message, Picture, User } from '../imports/models';
 
-Meteor.publishComposite('users', function(
+publishComposite('users', function(
   pattern: string
 ): PublishCompositeConfig<User> {
   if (!this.userId) {
@@ -53,7 +54,7 @@ Meteor.publish('messages', function(
   });
 });
 
-Meteor.publishComposite('chats', function(): PublishCompositeConfig<Chat> {
+publishComposite('chats', function(): PublishCompositeConfig<Chat> {
   if (!this.userId) {
     return;
   }
@@ -83,9 +84,11 @@ Meteor.publishComposite('chats', function(): PublishCompositeConfig<Chat> {
         children: [
           <PublishCompositeConfig2<Chat, User, Picture>> {
             find: (user, chat) => {
-              return Pictures.collection.find(user.profile.pictureId, {
-                fields: { url: 1 }
-              });
+              if(user.profile){
+                return Pictures.collection.find(user.profile.pictureId, {
+                  fields: { url: 1 }
+                });
+              }
             }
           }
         ]

@@ -1,24 +1,23 @@
 import { Injectable } from '@angular/core';
 import { Platform } from 'ionic-angular';
-import { Sim } from 'ionic-native';
+import { Sim } from '@ionic-native/sim';
 import { Accounts } from 'meteor/accounts-base';
 import { Meteor } from 'meteor/meteor';
 
 @Injectable()
 export class PhoneService {
-  constructor(private platform: Platform) {
+  constructor(private platform: Platform, private sim: Sim) {
 
   }
 
-  getNumber(): Promise<string> {
+  async getNumber(): Promise<string> {
     if (!this.platform.is('cordova') ||
       !this.platform.is('mobile')) {
-      return Promise.resolve('');
+      return '';
     }
 
-    return Sim.getSimInfo().then((info) => {
-      return '+' + info.phoneNumber;
-    });
+    const info = await this.sim.getSimInfo();
+    return '+' + info.phoneNumber;
   }
 
   verify(phoneNumber: string): Promise<void> {

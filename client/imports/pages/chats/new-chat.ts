@@ -5,10 +5,10 @@ import { _ } from 'meteor/underscore';
 import { Observable, Subscription, BehaviorSubject } from 'rxjs';
 import { Chats, Pictures, Users } from '../../../../imports/collections';
 import { User } from '../../../../imports/models';
-import template from './new-chat.html';
 
 @Component({
-  template
+  templateUrl: './new-chat.html',
+  styleUrls: ['./new-chat.scss']
 })
 export class NewChatComponent implements OnInit {
   searchPattern: BehaviorSubject<any>;
@@ -50,10 +50,9 @@ export class NewChatComponent implements OnInit {
       next: () => {
         this.viewCtrl.dismiss();
       },
-      error: (e: Error) => {
-        this.viewCtrl.dismiss().then(() => {
-          this.handleError(e);
-        });
+      error: async (e: Error) => {
+        await this.viewCtrl.dismiss();
+        this.handleError(e);
       }
     });
   }
@@ -84,7 +83,7 @@ export class NewChatComponent implements OnInit {
       const receiverIds = _.chain(chats)
         .pluck('memberIds')
         .flatten()
-        .concat(this.senderId)
+        .concat([this.senderId])
         .value();
 
       // Find all users which are not in belonging chats

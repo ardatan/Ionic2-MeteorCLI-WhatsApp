@@ -1,9 +1,11 @@
 {
   "compilerOptions": {
+    "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "declaration": false,
     "emitDecoratorMetadata": true,
+    "importHelpers": true,
     "experimentalDecorators": true,
     "lib": [
       "dom",
@@ -12,25 +14,26 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "sourceMap": true,
-    "target": "es5",
+    "target": "es2015",
     "skipLibCheck": true,
     "stripInternal": true,
     "noImplicitAny": false,
     "types": [
       "@types/meteor",
-      "@types/underscore",
       "@types/meteor-accounts-phone",
       "@types/meteor-publish-composite",
-      "@types/meteor-collection-hooks"
-    ]
+      "@types/meteor-collection-hooks",
+      "@types/moment"
+    ],
+    "traceResolution": false
   },
+  "exclude": [
+    "node_modules"
+  ],
   "include": [
     "client/**/*.ts",
     "server/**/*.ts",
     "imports/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
   ],
   "compileOnSave": false,
   "atom": {

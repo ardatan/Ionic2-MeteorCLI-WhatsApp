@@ -10,11 +10,15 @@
     "node_modules/ionic-angular/fonts/noto-sans.scss": "fonts/noto-sans.scss",
     "node_modules/ionic-angular/fonts/roboto-bold.ttf": "fonts/roboto-bold.ttf",
     "node_modules/ionic-angular/fonts/roboto-bold.woff": "fonts/roboto-bold.woff",
+    "node_modules/ionic-angular/fonts/roboto-bold.woff2": "fonts/roboto-bold.woff2",
     "node_modules/ionic-angular/fonts/roboto-light.ttf": "fonts/roboto-light.ttf",
     "node_modules/ionic-angular/fonts/roboto-light.woff": "fonts/roboto-light.woff",
+    "node_modules/ionic-angular/fonts/roboto-light.woff2": "fonts/roboto-light.woff2",
     "node_modules/ionic-angular/fonts/roboto-medium.ttf": "fonts/roboto-medium.ttf",
     "node_modules/ionic-angular/fonts/roboto-medium.woff": "fonts/roboto-medium.woff",
+    "node_modules/ionic-angular/fonts/roboto-medium.woff2": "fonts/roboto-medium.woff2",
     "node_modules/ionic-angular/fonts/roboto-regular.ttf": "fonts/roboto-regular.ttf",
-    "node_modules/ionic-angular/fonts/roboto-regular.woff": "fonts/roboto-regular.woff"
+    "node_modules/ionic-angular/fonts/roboto-regular.woff": "fonts/roboto-regular.woff",
+    "node_modules/ionic-angular/fonts/roboto-regular.woff2": "fonts/roboto-regular.woff2"
   }
 }

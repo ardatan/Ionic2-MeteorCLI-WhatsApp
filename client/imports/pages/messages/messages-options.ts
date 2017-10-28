@@ -2,10 +2,10 @@ import { Component } from '@angular/core';
 import { AlertController, NavController, NavParams, ViewController } from 'ionic-angular';
 import { MeteorObservable } from 'meteor-rxjs';
 import { ChatsPage } from '../chats/chats';
-import template from './messages-options.html';
 
 @Component({
-  template
+  templateUrl: './messages-options.html',
+  styleUrls: ['./messages-options.scss']
 })
 export class MessagesOptionsComponent {
   constructor(
@@ -15,7 +15,7 @@ export class MessagesOptionsComponent {
     public viewCtrl: ViewController
   ) {}
 
-  remove(): void {
+  async remove(): Promise<void> {
     const alert = this.alertCtrl.create({
       title: 'Remove',
       message: 'Are you sure you would like to proceed?',
@@ -34,29 +34,26 @@ export class MessagesOptionsComponent {
       ]
     });
 
-    this.viewCtrl.dismiss().then(() => {
-      alert.present();
-    });
+    await this.viewCtrl.dismiss()
+    alert.present();
   }
 
   handleRemove(alert): void {
     MeteorObservable.call('removeChat', this.params.get('chat')._id).subscribe({
-      next: () => {
-        alert.dismiss().then(() => {
-          this.navCtrl.setRoot(ChatsPage, {}, {
-            animate: true
-          });
+      next: async () => {
+        await alert.dismiss()
+        this.navCtrl.setRoot(ChatsPage, {}, {
+          animate: true
         });
       },
-      error: (e: Error) => {
-        alert.dismiss().then(() => {
-          if (e) {
-            return this.handleError(e);
-          }
+      error: async (e: Error) => {
+        await alert.dismiss()
+        if (e) {
+          return this.handleError(e);
+        }
 
-          this.navCtrl.setRoot(ChatsPage, {}, {
-            animate: true
-          });
+        this.navCtrl.setRoot(ChatsPage, {}, {
+          animate: true
         });
       }
     });

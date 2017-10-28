@@ -1,8 +1,14 @@
 import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { AgmCoreModule } from 'angular2-google-maps/core';
+import { AgmCoreModule } from '@agm/core';
 import { MomentModule } from 'angular2-moment';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
+import { Camera } from '@ionic-native/camera';
+import { Geolocation } from '@ionic-native/geolocation';
+import { ImagePicker } from '@ionic-native/image-picker';
+import { Sim } from '@ionic-native/sim';
+import { SplashScreen } from '@ionic-native/splash-screen';
+import { StatusBar } from '@ionic-native/status-bar';
 import { ChatsPage } from '../pages/chats/chats'
 import { ChatsOptionsComponent } from '../pages/chats/chats-options';
 import { NewChatComponent } from '../pages/chats/new-chat';
@@ -57,6 +63,12 @@ import { MyApp } from './app.component';
     ShowPictureComponent
   ],
   providers: [
+    Camera,
+    Geolocation,
+    ImagePicker,
+    Sim,
+    SplashScreen,
+    StatusBar,
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     PhoneService,
     PictureService

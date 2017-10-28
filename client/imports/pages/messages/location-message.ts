@@ -1,9 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Platform, ViewController } from 'ionic-angular';
-import { Geolocation } from 'ionic-native';
+import { Geolocation } from '@ionic-native/geolocation';
 import { Observable, Subscription } from 'rxjs';
 import { Location } from '../../../../imports/models';
-import template from './location-message.html';
 
 const DEFAULT_ZOOM = 8;
 const EQUATOR = 40075004;
@@ -12,7 +11,8 @@ const DEFAULT_LNG = 7.809007;
 const LOCATION_REFRESH_INTERVAL = 500;
 
 @Component({
-  template
+  templateUrl: './location-message.html',
+  styleUrls: ['./location-message.scss']
 })
 export class NewLocationMessageComponent implements OnInit, OnDestroy {
   lat: number = DEFAULT_LAT;
@@ -21,18 +21,26 @@ export class NewLocationMessageComponent implements OnInit, OnDestroy {
   accuracy: number = -1;
   intervalObs: Subscription;
 
-  constructor(private platform: Platform, private viewCtrl: ViewController) {
+  constructor(
+     private platform: Platform,
+     private viewCtrl: ViewController,
+     private geolocation: Geolocation
+   ) {
   }
 
   ngOnInit() {
     // Refresh location at a specific refresh rate
-    this.intervalObs = this.reloadLocation()
-      .flatMapTo(Observable
-        .interval(LOCATION_REFRESH_INTERVAL)
-        .timeInterval())
-      .subscribe(() => {
-        this.reloadLocation();
-      });
+    this.intervalObs = this.geolocation.watchPosition({
+      maximumAge: LOCATION_REFRESH_INTERVAL
+    }).subscribe(position => {
+      if (this.lat && this.lng) {
+        // Update view-models to represent the current geo-location
+        this.accuracy = position.coords.accuracy;
+        this.lat = position.coords.latitude;
+        this.lng = position.coords.longitude;
+        this.zoom = this.calculateZoomByAccureacy(this.accuracy);
+      }
+    })
   }
 
   ngOnDestroy() {
@@ -50,18 +58,6 @@ export class NewLocationMessageComponent implements OnInit, OnDestroy {
     const requiredMpp = accuracy / screenSize;
 
     return ((Math.log(EQUATOR / (256 * requiredMpp))) / Math.log(2)) + 1;
-  }
-
-  reloadLocation() {
-    return Observable.fromPromise(Geolocation.getCurrentPosition().then((position) => {
-      if (this.lat && this.lng) {
-        // Update view-models to represent the current geo-location
-        this.accuracy = position.coords.accuracy;
-        this.lat = position.coords.latitude;
-        this.lng = position.coords.longitude;
-        this.zoom = this.calculateZoomByAccureacy(this.accuracy);
-      }
-    }));
   }
 
   sendLocation() {

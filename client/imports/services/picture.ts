@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Platform } from 'ionic-angular';
-import { ImagePicker } from 'ionic-native';
+import { ImagePicker } from '@ionic-native/image-picker';
 import { UploadFS } from 'meteor/jalik:ufs';
 import { _ } from 'meteor/underscore';
 import { PicturesStore } from '../../../imports/collections';
@@ -8,12 +8,12 @@ import { DEFAULT_PICTURE_URL } from '../../../imports/models';
 
 @Injectable()
 export class PictureService {
-  constructor(private platform: Platform) {
+  constructor(private platform: Platform, private imagePicker: ImagePicker) {
   }
 
-  select(): Promise<Blob> {
+  async select(): Promise<Blob> {
     if (!this.platform.is('cordova') || !this.platform.is('mobile')) {
-      return new Promise((resolve, reject) => {
+      return new Promise<File>((resolve, reject) => {
         try {
           UploadFS.selectFile((file: File) => {
             resolve(file);
@@ -24,10 +24,8 @@ export class PictureService {
         }
       });
     }
-
-    return ImagePicker.getPictures({maximumImagesCount: 1}).then((URL: string) => {
-      return this.convertURLtoBlob(URL);
-    });
+    const URL: string = await this.imagePicker.getPictures({maximumImagesCount: 1});
+    return this.convertURLtoBlob(URL);
   }
 
   upload(blob: Blob): Promise<any> {

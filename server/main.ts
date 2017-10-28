@@ -77,6 +77,7 @@ Meteor.startup(() => {
       pictureId: picture._id
     }
   });
+
 });
 
 function importPictureFromUrl(options: { name: string, url: string }): Picture {
